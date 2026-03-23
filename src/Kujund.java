@@ -1,4 +1,5 @@
-public interface Kujundid {
-	static char[][] kujund = new char[3][3];
-
+public interface Kujund {
+	char[][] getMaatriks();
+	void poora();
+	char getSumbol();
 }

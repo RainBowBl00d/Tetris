@@ -1,6 +1,3 @@
-package Kujundid;
-use Kujund;
-
 public class TKujund implements Kujund {
 	private char[][] kuju = {
 			{' ', 'T', ' '},
