@@ -1,36 +1,182 @@
 public class Tetris {
-	private int read = 20;
-	private int veerud = 10;
-	private char[][] laud = new char[read][veerud];
+    private int read = 20;
+    private int veerud = 10;
+    private char[][] laud = new char[read][veerud];
 
-	public Tetris() {
-		for (int i = 0; i < read; i++) {
-			for (int j = 0; j < veerud; j++) {
-				laud[i][j] = ' '; // Kasutame tühikut tühja koha tähistamiseks
-			}
-		}
-	}
+    private Kujund praeguneKujund;
+    private int kujundRida;
+    private int kujundVeerg;
+    private int skoor;
 
-	public void prindiLaud() {
-		for (int i = 0; i < read; i++) {
-			for (int j = 0; j < veerud; j++) {
-				System.out.print(laud[i][j] + " ");
-			}
-			System.out.println();
-		}
-	}
-	public void liigutaVasakule() {
-	}
-	public void liigutaParemale() {
-	}
-	public void liigutaAlla() {
-	}
-	public void pööraPäripäeva() {
-	}
-	public void pööraVastupäeva() {
-	}
-	public boolean sammEdasi() {
-		return true;
-	}
+    public Tetris() {
+        for (int i = 0; i < read; i++) {
+            for (int j = 0; j < veerud; j++) {
+                laud[i][j] = ' ';
+            }
+        }
+        uusKujund();
+    }
+
+    private boolean uusKujund() {
+        praeguneKujund = new TKujund();
+        kujundRida = 0;
+        kujundVeerg = veerud / 2 - 1;
+        return saabLiikuda(kujundRida, kujundVeerg, praeguneKujund.getMaatriks());
+    }
+
+    private boolean saabLiikuda(int uusRida, int uusVeerg, char[][] maatriks) {
+        for (int i = 0; i < maatriks.length; i++) {
+            for (int j = 0; j < maatriks[i].length; j++) {
+                if (maatriks[i][j] != ' ') {
+                    int r = uusRida + i;
+                    int c = uusVeerg + j;
+                    if (r < 0 || r >= read || c < 0 || c >= veerud) {
+                        return false;
+                    }
+                    if (laud[r][c] != ' ') {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
+    public void prindiLaud() {
+        char[][] kuva = new char[read][veerud];
+        for (int i = 0; i < read; i++) {
+            for (int j = 0; j < veerud; j++) {
+                kuva[i][j] = laud[i][j];
+            }
+        }
+        if (praeguneKujund != null) {
+            char[][] m = praeguneKujund.getMaatriks();
+            for (int i = 0; i < m.length; i++) {
+                for (int j = 0; j < m[i].length; j++) {
+                    if (m[i][j] != ' ') {
+                        int r = kujundRida + i;
+                        int c = kujundVeerg + j;
+                        if (r >= 0 && r < read && c >= 0 && c < veerud) {
+                            kuva[r][c] = m[i][j];
+                        }
+                    }
+                }
+            }
+        }
+        // Column numbers header
+        System.out.print("   ");
+        for (int j = 0; j < veerud; j++) System.out.printf("%-2d", j);
+        System.out.println();
+        // Top border
+        System.out.print("  +");
+        for (int j = 0; j < veerud; j++) System.out.print("--");
+        System.out.println("+");
+        // Board rows with row numbers
+        for (int i = 0; i < read; i++) {
+            System.out.printf("%2d|", i);
+            for (int j = 0; j < veerud; j++) {
+                if (kuva[i][j] != ' ') {
+                    System.out.print(kuva[i][j] + " ");
+                } else {
+                    System.out.print(". ");
+                }
+            }
+            System.out.println("|");
+        }
+        // Bottom border
+        System.out.print("  +");
+        for (int j = 0; j < veerud; j++) System.out.print("--");
+        System.out.println("+");
+    }
+
+    public void liigutaVasakule() {
+        if (saabLiikuda(kujundRida, kujundVeerg - 1, praeguneKujund.getMaatriks())) {
+            kujundVeerg--;
+        }
+    }
+
+    public void liigutaParemale() {
+        if (saabLiikuda(kujundRida, kujundVeerg + 1, praeguneKujund.getMaatriks())) {
+            kujundVeerg++;
+        }
+    }
+
+    public void liigutaAlla() {
+        if (saabLiikuda(kujundRida + 1, kujundVeerg, praeguneKujund.getMaatriks())) {
+            kujundRida++;
+        }
+    }
+
+    public void pööraPäripäeva() {
+        praeguneKujund.poora();
+        if (!saabLiikuda(kujundRida, kujundVeerg, praeguneKujund.getMaatriks())) {
+            praeguneKujund.poora();
+            praeguneKujund.poora();
+            praeguneKujund.poora();
+        }
+    }
+
+    public void pööraVastupäeva() {
+        praeguneKujund.poora();
+        praeguneKujund.poora();
+        praeguneKujund.poora();
+        if (!saabLiikuda(kujundRida, kujundVeerg, praeguneKujund.getMaatriks())) {
+            praeguneKujund.poora();
+        }
+    }
+
+    private void lukustaKujund() {
+        char[][] m = praeguneKujund.getMaatriks();
+        for (int i = 0; i < m.length; i++) {
+            for (int j = 0; j < m[i].length; j++) {
+                if (m[i][j] != ' ') {
+                    int r = kujundRida + i;
+                    int c = kujundVeerg + j;
+                    if (r >= 0 && r < read && c >= 0 && c < veerud) {
+                        laud[r][c] = m[i][j];
+                    }
+                }
+            }
+        }
+    }
+
+    private void eemaldaTaysRead() {
+        for (int i = read - 1; i >= 0; i--) {
+            boolean tays = true;
+            for (int j = 0; j < veerud; j++) {
+                if (laud[i][j] == ' ') {
+                    tays = false;
+                    break;
+                }
+            }
+            if (tays) {
+                for (int k = i; k > 0; k--) {
+                    for (int j = 0; j < veerud; j++) {
+                        laud[k][j] = laud[k - 1][j];
+                    }
+                }
+                // Clear top row
+                for (int j = 0; j < veerud; j++) {
+                    laud[0][j] = ' ';
+                }
+                skoor += 100;
+                i++;
+            }
+        }
+    }
+
+    public int getSkoor() {
+        return skoor;
+    }
+
+    public boolean sammEdasi() {
+        // Hard drop: move piece as far down as possible
+        while (saabLiikuda(kujundRida + 1, kujundVeerg, praeguneKujund.getMaatriks())) {
+            kujundRida++;
+        }
+        lukustaKujund();
+        eemaldaTaysRead();
+        return uusKujund();
+    }
 }
 

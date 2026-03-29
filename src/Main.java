@@ -44,8 +44,6 @@ public class Main {
 				}
 			}
 
-			// 4. Pärast käskude jada liigub kujund automaatselt ühe sammu alla
-			// ja kontrollitakse, kas mäng on läbi
 			if (!mang.sammEdasi()) {
 				System.out.println("MÄNG LÄBI!");
 				mangKaib = false;
