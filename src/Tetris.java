@@ -1,3 +1,5 @@
+import java.util.Random;
+
 public class Tetris {
     private int read = 20;
     private int veerud = 10;
@@ -7,6 +9,7 @@ public class Tetris {
     private int kujundRida;
     private int kujundVeerg;
     private int skoor;
+    private int tase = 1;      // kui kunagi edasi teha läheb nagunii vaja
 
     public Tetris() {
         for (int i = 0; i < read; i++) {
@@ -18,7 +21,27 @@ public class Tetris {
     }
 
     private boolean uusKujund() {
-        praeguneKujund = new TKujund();
+        Random jargmine = new Random();
+        int number = jargmine.nextInt(6);
+        switch (number){
+            case 1:
+                praeguneKujund = new TKujund();
+                break;
+            case 2:
+                praeguneKujund = new JKujund();
+                break;
+            case 3:
+                praeguneKujund = new ZKujund();
+                break;
+            case 4:
+                praeguneKujund = new LKujund();
+                break;
+            case 5:
+                praeguneKujund = new IKujund();
+                break;
+            default:
+                praeguneKujund = new  OKujund();
+        }
         kujundRida = 0;
         kujundVeerg = veerud / 2 - 1;
         return saabLiikuda(kujundRida, kujundVeerg, praeguneKujund.getMaatriks());
@@ -141,6 +164,7 @@ public class Tetris {
     }
 
     private void eemaldaTaysRead() {
+        int täis = 0;
         for (int i = read - 1; i >= 0; i--) {
             boolean tays = true;
             for (int j = 0; j < veerud; j++) {
@@ -159,9 +183,26 @@ public class Tetris {
                 for (int j = 0; j < veerud; j++) {
                     laud[0][j] = ' ';
                 }
-                skoor += 100;
                 i++;
+                täis++;
             }
+        }
+        // Klassikaline (Nintendo/NES) punktisüsteem
+        switch (täis){
+            case 1:
+                skoor += 40 * tase;
+                break;
+            case 2:
+                skoor += 100 * tase;
+                break;
+            case 3:
+                skoor += 300 * tase;
+                break;
+            case 4:
+                skoor += 1200 * tase;
+                break;
+            default:
+                skoor += 0;
         }
     }
 
