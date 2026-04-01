@@ -1,3 +1,4 @@
+// J-kujuline tetromino (3x3 maatriks)
 public class JKujund implements Kujund{
     private char[][] kuju = {
             {' ', 'J', ' '},

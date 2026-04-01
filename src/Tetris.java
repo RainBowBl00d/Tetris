@@ -1,5 +1,6 @@
 import java.util.Random;
 
+// Mänguloogika: haldab mängulauda, kujundite liikumist, skoori ja reegleid
 public class Tetris {
     private int read = 20;
     private int veerud = 10;
@@ -9,7 +10,7 @@ public class Tetris {
     private int kujundRida;
     private int kujundVeerg;
     private int skoor;
-    private int tase = 1;      // kui kunagi edasi teha läheb nagunii vaja
+    private int tase = 1;     // kui kunagi edasi teha läheb nagunii vaja
 
     public Tetris() {
         for (int i = 0; i < read; i++) {
@@ -20,9 +21,10 @@ public class Tetris {
         uusKujund();
     }
 
+    // Tekitab juhusliku uue kujundi laua ülaossa
     private boolean uusKujund() {
         Random jargmine = new Random();
-        int number = jargmine.nextInt(6);
+        int number = jargmine.nextInt(7);
         switch (number){
             case 1:
                 praeguneKujund = new TKujund();
@@ -39,6 +41,9 @@ public class Tetris {
             case 5:
                 praeguneKujund = new IKujund();
                 break;
+                case 6:
+                praeguneKujund = new SKujund();
+                break;
             default:
                 praeguneKujund = new  OKujund();
         }
@@ -47,6 +52,7 @@ public class Tetris {
         return saabLiikuda(kujundRida, kujundVeerg, praeguneKujund.getMaatriks());
     }
 
+    // Kontrollib, kas kujund mahub antud positsioonile (piirid + kokkupõrked)
     private boolean saabLiikuda(int uusRida, int uusVeerg, char[][] maatriks) {
         for (int i = 0; i < maatriks.length; i++) {
             for (int j = 0; j < maatriks[i].length; j++) {
@@ -65,6 +71,7 @@ public class Tetris {
         return true;
     }
 
+    // Kuvab mängulaua koos aktiivse kujundiga, veeru- ja reanumbritega
     public void prindiLaud() {
         char[][] kuva = new char[read][veerud];
         for (int i = 0; i < read; i++) {
@@ -86,15 +93,16 @@ public class Tetris {
                 }
             }
         }
-        // Column numbers header
+
+        // Ridade numbrite kuvamine
         System.out.print("   ");
         for (int j = 0; j < veerud; j++) System.out.printf("%-2d", j);
         System.out.println();
-        // Top border
+        // Ülemine piir
         System.out.print("  +");
         for (int j = 0; j < veerud; j++) System.out.print("--");
         System.out.println("+");
-        // Board rows with row numbers
+        // Mängulaua read koos reanumbritega
         for (int i = 0; i < read; i++) {
             System.out.printf("%2d|", i);
             for (int j = 0; j < veerud; j++) {
@@ -106,7 +114,7 @@ public class Tetris {
             }
             System.out.println("|");
         }
-        // Bottom border
+        // Alumine piir
         System.out.print("  +");
         for (int j = 0; j < veerud; j++) System.out.print("--");
         System.out.println("+");
@@ -130,6 +138,7 @@ public class Tetris {
         }
     }
 
+    // Pöörab päripäeva; kui ei mahu, tühistab pöörde
     public void pööraPäripäeva() {
         praeguneKujund.poora();
         if (!saabLiikuda(kujundRida, kujundVeerg, praeguneKujund.getMaatriks())) {
@@ -139,6 +148,7 @@ public class Tetris {
         }
     }
 
+    // Vastupäeva = 3x päripäeva; tühistab kui ei mahu
     public void pööraVastupäeva() {
         praeguneKujund.poora();
         praeguneKujund.poora();
@@ -148,6 +158,7 @@ public class Tetris {
         }
     }
 
+    // Kirjutab kujundi lõplikult mängulauale (lukustab paika)
     private void lukustaKujund() {
         char[][] m = praeguneKujund.getMaatriks();
         for (int i = 0; i < m.length; i++) {
@@ -163,6 +174,7 @@ public class Tetris {
         }
     }
 
+    // Eemaldab täis read ja nihutab ülemised read alla
     private void eemaldaTaysRead() {
         int täis = 0;
         for (int i = read - 1; i >= 0; i--) {
@@ -179,7 +191,7 @@ public class Tetris {
                         laud[k][j] = laud[k - 1][j];
                     }
                 }
-                // Clear top row
+                // Tühjendab ülemise rea
                 for (int j = 0; j < veerud; j++) {
                     laud[0][j] = ' ';
                 }
@@ -210,8 +222,11 @@ public class Tetris {
         return skoor;
     }
 
+    public void setTase(int uusTase) {
+        tase = uusTase;
+    }
+
     public boolean sammEdasi() {
-        // Hard drop: move piece as far down as possible
         while (saabLiikuda(kujundRida + 1, kujundVeerg, praeguneKujund.getMaatriks())) {
             kujundRida++;
         }

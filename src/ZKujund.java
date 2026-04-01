@@ -1,3 +1,4 @@
+// Z-kujuline tetromino (3x3 maatriks)
 public class ZKujund implements Kujund {
     private char[][] kuju = {
             {'Z', 'Z', ' '},

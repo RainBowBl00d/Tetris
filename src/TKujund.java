@@ -1,3 +1,4 @@
+// T-kujuline tetromino (3x3 maatriks)
 public class TKujund implements Kujund {
     private char[][] kuju = {
             {' ', 'T', ' '},
@@ -10,6 +11,7 @@ public class TKujund implements Kujund {
         return kuju;
     }
 
+    // Pöörab maatriksit 90° päripäeva: transponeerib ja peegeldab
     @Override
     public void poora() {
         int n = kuju.length;

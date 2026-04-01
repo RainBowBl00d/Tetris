@@ -1,3 +1,4 @@
+// I-kujuline tetromino (4x4 maatriks, pikk pulk)
 public class IKujund implements Kujund{
     private char[][] kuju = {
             {'I', ' ', ' ', ' '},
